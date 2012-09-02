@@ -1,0 +1,109 @@
+# this file basically make 'es' look more like a modern bash prompt
+# (in terms of following symlinks, colours, cd - (+ enhancements))
+
+hostname = `hostname
+noexport = $noexport prompt
+
+# symlink cd (and pwd)
+
+fn pwd {
+    if {~ $#cwd 0} {
+        noexport = $noexport cwd
+        cwd = `` \n /bin/pwd
+    }
+    echo $cwd
+}
+
+let (cd = $fn-cd) fn cd dir {
+    if {~ $#cwd 0} {
+        noexport = $noexport cwd
+    }
+    if {~ $#dir 0} {
+        $cd
+        cwd = ~
+    } {
+        let (current = <={
+            if {~ $dir /*} {
+                result
+            } {
+                if {~ $#cwd 0} {
+                    cwd = `` \n /bin/pwd
+                }
+                %split / $cwd
+            }
+        }) {
+            for (name = <={%split / $dir}) {
+                if {~ $name ..} {
+                    if {!~ $#current 0} {
+                        let (x = 1 $current) current = $x(2 ... $#current)
+                    }
+                } {!~ $name . ''} {
+                    current = $current $name
+                }
+            }
+            let (path = / ^ <={ %flatten / $current }) {
+                $cd $path
+                cwd = $path
+            }
+        }
+    }
+}
+
+# go back -N directories in cd (cd -0 prints stack, cd - goes to previous)
+#
+let (cd = $fn-cd; cd-stack = ()) fn cd dir { 
+    let (old = `pwd) {
+        if {~ $dir -*} {
+            let (index = <={~~ $dir -*}) {
+                if {~ $index ''} {
+                    index = 1
+                }
+                if {~ $index [1-9]} {
+                    dir = $cd-stack($index)
+                } {~ $index 0} {
+                    echo $cd-stack
+                    return 0
+                } {
+                    throw error cd 'cd: invalid argument'
+                }
+            }
+        }
+        $cd $dir
+        cd-stack = ($old $cd-stack(1 ... 9))
+    }
+}
+
+# colourful prompt
+let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
+    $cd $*;
+    let (w = `pwd) {
+        if {~ $^w $home^*} {
+            w = '~'^<={~~ $^w $home^*}
+        }
+        prompt = $c[4\;35m$z$hostname^$c[0m$z:$c[1\;34m$z$^w$c[0m$z'; '
+        if {~ $TERM xterm* rxvt*} {
+            echo -n \033]0\;$USER'@'$hostname': '$^w\007
+        }
+    }
+}
+
+# colourful programs with arguments
+for (prog = ls grep) {
+    let (o = `{whatis $prog}) fn $prog {$o --color\=auto $*}
+}
+
+# colourful programs with wrappers
+for (prog = diff make gcc) {
+    fn $prog { color$prog $* }
+}
+
+for (othergcc = g++ c++ cc) {
+    fn $othergcc { colorgcc $* }
+}
+
+fn %prompt {
+    noexport = $noexport prompt # no reason to share this mess around
+    stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
+    cd . # in order to set our colourful prompt and the header
+    fn %prompt # now lose the prompt function
+}

@@ -5,11 +5,6 @@
 # the default umask is set in /etc/login.defs
 #umask 022
 
-# include .bashrc if it exists
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi
-
 # set up user binaries etc.
 function insert() {
     if [ -z "${!1}" ]; then
@@ -18,16 +13,22 @@ function insert() {
         export $1="$2:${!1}"
     fi
 }
+export -f insert
 PREFIX=~/local
 if [ -d $PREFIX ] ; then
     insert PATH "$PREFIX/bin"
     insert MANPATH "/usr/share/man"
     insert MANPATH "$PREFIX/share/man"
     insert MANPATH "$PREFIX/man"
-    insert LD_LIBRARY_PATH "$PREFIX/lib"
     insert LIBRARY_PATH "$PREFIX/lib"
     insert CPATH "$PREFIX/include"
 fi
 
 export EDITOR=vim
 export TZ="/usr/share/zoneinfo/Australia/Sydney"
+
+# include .bashrc if it exists
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+

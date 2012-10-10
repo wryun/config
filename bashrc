@@ -5,9 +5,10 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-if [ -z $STY ]; then
-    exec screen -RR
-fi
+#always screen...
+#if [ -z $STY ]; then
+#    exec screen -RR
+#fi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -58,13 +59,13 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 currbranch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/' -e 's/jamesh-//'
 }
 if [ "$color_prompt" = yes ]; then
     #PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
     bash_prompt_command() {
       # How many characters of the $PWD should be kept
-      local pwdmaxlen=33
+      local pwdmaxlen=25
       # Indicate that there has been dir truncation
       local trunc_symbol="..."
       NEW_PWD=${PWD/#$HOME/\~}
@@ -80,10 +81,15 @@ if [ "$color_prompt" = yes ]; then
           NEW_PWD=${temp}
         fi
       fi
-      CURR_BRANCH="" # " [`currbranch`]"
+      if git branch > /dev/null 2> /dev/null; then
+        CURR_BRANCH=" [`currbranch`]"
+      else
+        unset CURR_BRANCH
+      fi
     }
 
-    PS1="\[[4;32m\]\h\[[0m\]:\[[1;34m\]\${NEW_PWD}\[[0m\]\${CURR_BRANCH}\$ "
+    # PS1="\[[4;32m\]\h\[[0m\]:\[[1;34m\]\${NEW_PWD}\[[0m\]\${CURR_BRANCH}\$ "
+    PS1="\[[1;34m\]\${NEW_PWD}\[[0m\]\${CURR_BRANCH}\$ "
 
     case $TERM in
     xterm*|rxvt*|screen*)

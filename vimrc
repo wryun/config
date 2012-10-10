@@ -10,6 +10,7 @@ syntax enable
 "autocmd FileType c,cpp,java,php,html,py autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " James
+:au BufAdd,BufNewFile * nested tab sball
 set ts=4 sw=4 sts=4
 set list
 set listchars=tab:>.,trail:~

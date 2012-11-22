@@ -1,0 +1,5 @@
+#!/bin/bash
+
+for f; do
+    ln -sf config/$f ~/.$f
+done

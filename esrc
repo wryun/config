@@ -1,4 +1,4 @@
-# this file basically make 'es' look more like a modern bash prompt
+# this file basically makes 'es' look more like a modern bash prompt
 # (in terms of following symlinks, colours, cd - (+ enhancements))
 
 hostname = `hostname

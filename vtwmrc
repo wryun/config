@@ -2,26 +2,34 @@
 ShowIconManager
 IconifyByUnmapping
 IconManagerGeometry "800x150" 4
-IconManagerDontShow { "xclock" "xload" "xeyes" }
+IconManagerDontShow { "VTWM *" "xclock" "xload" "xeyes" }
 NoTitle { "VTWM *" "xclock" "xload" "xeyes" }
 DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
 
-# But let's pretend we're BeOS
-SqueezeTitle
-
 # Keyboard bindings
-"F2" = : all : ! "exec xterm &"
-"F7" = : all : ! "exec firefox &"
-"F10" = : all : f.destroy
-"F11" = : all : f.restart
-"F12" = : all : f.quit
+"t" = m4 : all : ! "xterm &"
+"b" = m4 : all : ! "firefox &"
+"c" = m4 : all : ! "google-chrome &"
+"a" = m4 : all : f.panleft  "100"
+"d" = m4 : all : f.panright "100"
+"r" = m4 : all : f.restart
+"q" = m4 : all : f.quit
 
 # Mouse bindings
-MoveDelta 3
 Function "move-or-raise" { f.move f.deltastop f.raise }
-Button1 = m : window : f.function "move-or-raise"
-Button2 = m : window : f.delete
-Button3 = m : window : f.lower
+Button1 = m4 : window : f.function "move-or-raise"
+Button2 = m4 : window : f.lower
+Button2 = m | m4 : window : f.delete
+Button3 = m4 : window : f.resize
 
 # Virtual Desktops
-VirtualDesktop  "4x1"   16
+VirtualDesktop  "=4x1+0-0"   16
+VirtualDesktopFont "5x7"
+NailedDown { "VTWM *" "xclock" "xeyes" "xload" }
+FixManagedVirtualGeometries
+FixTransientVirtualGeometries
+
+# other
+SqueezeTitle
+AutoRelativeResize
+

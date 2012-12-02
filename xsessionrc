@@ -1,0 +1,4 @@
+xsetroot -grey
+xclock -norender -geometry 30x30-0+0 &
+xload -update 1 -jumpscroll 1 -nolabel -geometry 100x30-0-0 &
+xeyes -geometry -0+30 &

@@ -27,3 +27,6 @@ if [ -f "$HOME/.esrc" ]; then
         sh <<<'export -p'
     x`"
 fi
+
+# hack to get twm to work correctly
+export LC_ALL=C

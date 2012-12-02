@@ -1,0 +1,27 @@
+# We want icon managers, not silly shit
+ShowIconManager
+IconifyByUnmapping
+IconManagerGeometry "800x150" 4
+IconManagerDontShow { "xclock" "xload" "xeyes" }
+NoTitle { "VTWM *" "xclock" "xload" "xeyes" }
+DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
+
+# But let's pretend we're BeOS
+SqueezeTitle
+
+# Keyboard bindings
+"F2" = : all : ! "exec xterm &"
+"F7" = : all : ! "exec firefox &"
+"F10" = : all : f.destroy
+"F11" = : all : f.restart
+"F12" = : all : f.quit
+
+# Mouse bindings
+MoveDelta 3
+Function "move-or-raise" { f.move f.deltastop f.raise }
+Button1 = m : window : f.function "move-or-raise"
+Button2 = m : window : f.delete
+Button3 = m : window : f.lower
+
+# Virtual Desktops
+VirtualDesktop  "4x1"   16

@@ -10,7 +10,8 @@ syntax enable
 "autocmd FileType c,cpp,java,php,html,py autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " James
-:au BufAdd,BufNewFile * nested tab sball
+" :au BufAdd,BufNewFile * nested tab sball
+set tags=./tags;
 set ts=4 sw=4 sts=4
 set list
 set listchars=tab:>.,trail:~
@@ -34,6 +35,6 @@ set foldmethod=indent foldnestmax=2 fml=4
 "highlight FoldColumn ctermfg=63 ctermbg=4 guibg=blue guifg=white
 
 " gtags
-map <C-\> :GtagsCursor<CR>
-map <C-n> :cn<CR>
-map <C-p> :cp<CR>
+"map <C-\> :GtagsCursor<CR>
+"map <C-n> :cn<CR>
+"map <C-p> :cp<CR>

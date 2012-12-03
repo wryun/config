@@ -17,10 +17,12 @@ export -f insert
 PREFIX=~/local
 if [ -d $PREFIX ] ; then
     insert PATH "$PREFIX/bin"
+    insert PATH "/opt/vagrant/bin"
     insert MANPATH "/usr/share/man"
     insert MANPATH "$PREFIX/share/man"
     insert MANPATH "$PREFIX/man"
     insert LIBRARY_PATH "$PREFIX/lib"
+    insert LD_LIBRARY_PATH "$HOME/local/lib"
     insert CPATH "$PREFIX/include"
 fi
 

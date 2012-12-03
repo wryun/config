@@ -1,10 +1,10 @@
 # We want icon managers, not silly shit
 ShowIconManager
 IconifyByUnmapping
-IconManagerGeometry "800x150" 4
+IconManagerGeometry "2400+0+290" 10
 IconManagerDontShow { "VTWM *" "xclock" "xload" "xeyes" }
-NoTitle { "VTWM *" "xclock" "xload" "xeyes" }
-DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
+NoTitle { "VTWM *" "xclock" "xload" "xeyes" "* {log}" }
+#DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
 
 # Keyboard bindings
 "t" = m4 : all : ! "xterm &"
@@ -12,8 +12,9 @@ DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
 "c" = m4 : all : ! "google-chrome &"
 "a" = m4 : all : f.panleft  "100"
 "d" = m4 : all : f.panright "100"
-"r" = m4 : all : f.restart
-"q" = m4 : all : f.quit
+
+"r" = m | m4 : all : f.restart
+"q" = m | m4 : all : f.quit
 
 # Mouse bindings
 Function "move-or-raise" { f.move f.deltastop f.raise }
@@ -23,7 +24,7 @@ Button2 = m | m4 : window : f.delete
 Button3 = m4 : window : f.resize
 
 # Virtual Desktops
-VirtualDesktop  "=4x1+0-0"   16
+VirtualDesktop  "4x1+0-200"   16
 VirtualDesktopFont "5x7"
 NailedDown { "VTWM *" "xclock" "xeyes" "xload" }
 FixManagedVirtualGeometries

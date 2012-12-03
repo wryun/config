@@ -75,16 +75,24 @@ let (cd = $fn-cd; cd-stack = ()) fn cd dir {
 
 # colourful prompt
 let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
-    $cd $*;
-    let (w = `pwd) {
-        if {~ $^w $home^*} {
-            w = '~'^<={~~ $^w $home^*}
-        }
-        prompt = $c[4\;35m$z$hostname^$c[0m$z:$c[1\;34m$z$^w$c[0m$z'; '
-        if {~ $TERM xterm* rxvt*} {
-            echo -n \033]0\;$USER'@'$hostname': '$^w\007
-        }
+    $cd $*
+    pwd = `pwd
+    if {~ $^pwd $home^*} {
+        pwd = '~'^<={~~ $^pwd $home^*}
     }
+    prompt = $c[4\;35m$z$hostname^$c[0m$z:$c[1\;34m$z$^pwd$c[0m$z'; '
+}
+
+# window title
+let (parse = $fn-%parse) fn %parse prompt1 prompt2 {
+    if {~ $TERM xterm* rxvt*} {
+        echo -n \033]0\;$USER'@'$hostname': '$^pwd\007
+    }
+    cmd = <={$parse $^prompt1 $^prompt2}
+    if {~ $TERM xterm* rxvt*} {
+        echo -n \033]0\;$USER'@'$hostname': '$^cmd\007
+    }
+    return $cmd
 }
 
 # colourful programs with arguments
@@ -107,3 +115,5 @@ fn %prompt {
     cd . # in order to set our colourful prompt and the header
     fn %prompt # now lose the prompt function
 }
+
+

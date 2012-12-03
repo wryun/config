@@ -149,6 +149,28 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 # screen wipes this out... bleh
-if ! [ -z $STY ]; then
+
+# set up user binaries etc.
+function insert() {
+    if [ -z "${!1}" ]; then
+        export $1="$2"
+    else
+        export $1="$2:${!1}"
+    fi
+}
+export -f insert
+PREFIX=~/local
+if [ -d $PREFIX ] ; then
+    insert PATH "$PREFIX/bin"
+    insert MANPATH "/usr/share/man"
+    insert MANPATH "$PREFIX/share/man"
+    insert MANPATH "$PREFIX/man"
+    insert LIBRARY_PATH "$PREFIX/lib"
     insert LD_LIBRARY_PATH "$HOME/local/lib"
+    insert CPATH "$PREFIX/include"
 fi
+insert PATH "/opt/vagrant/bin"
+
+alias f='find . -name'
+export EDITOR=vim
+#export TZ="/usr/share/zoneinfo/Australia/Sydney"

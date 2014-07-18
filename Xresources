@@ -1,3 +1,6 @@
+URxvt.iso14755: false
+URxvt.iso14755_52: false
+
 XTerm*saveLines: 10000
 XTerm*foreground: black
 XTerm*background: white
@@ -5,7 +8,7 @@ XTerm*geometry: 80x50
 
 !zenburn
 !black
-XTerm*color0: #353535
+XTerm*color0: #333333
 XTerm*color8: #666666
 !red
 XTerm*color1: #AE4747
@@ -26,5 +29,37 @@ XTerm*color13: #D8BFD8
 XTerm*color6: #A7A15E
 XTerm*color14: #F0E68C
 !white
-XTerm*color7: #DDDDDD
+XTerm*color7: #777777
 XTerm*color15: #FFFFFF
+
+Rxvt*saveLines: 10000
+Rxvt*foreground: black
+Rxvt*background: white
+Rxvt*geometry: 80x50
+Rxvt*scrollBar: off
+
+!zenburn
+!black
+Rxvt*color0: #333333
+Rxvt*color8: #666666
+!red
+Rxvt*color1: #AE4747
+Rxvt*color9: #EE6363
+!green
+Rxvt*color2: #556B2F
+Rxvt*color10: #9ACD32
+!brown/yellow
+Rxvt*color3: #DAA520
+Rxvt*color11: #FFC125
+!blue
+Rxvt*color4: #6F99B4
+Rxvt*color12: #7C96B0
+!magenta
+Rxvt*color5: #8B7B8B
+Rxvt*color13: #D8BFD8
+!cyan
+Rxvt*color6: #A7A15E
+Rxvt*color14: #F0E68C
+!white
+Rxvt*color7: #777777
+Rxvt*color15: #FFFFFF

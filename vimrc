@@ -11,6 +11,7 @@ syntax enable
 
 " James
 " :au BufAdd,BufNewFile * nested tab sball
+set clipboard=unnamed
 set tags=./tags;
 set ts=4 sw=4 sts=4
 set list

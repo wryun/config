@@ -1,5 +1,7 @@
-xrandr --output DVI-0 --mode 2560x1440 --pos 0x0 --output HDMI-0 --pos 2560x-290 --rotate left
-xsetroot -grey
-xclock -norender -geometry 90x90-1200+290 &
-xload -update 1 -jumpscroll 1 -nolabel -geometry 100x30-1290+290 &
-xeyes -geometry -1200-200 &
+xrandr --output DP1 --mode 2560x1440 --pos 0x0 --output HDMI2 --mode 1920x1200 --pos 2560x-200 --rotate left
+xrdb -merge .Xresources
+#xautolock -time 1 -locker slock -corners 00+0 -cornerdelay 0 &
+xautolock -time 1 -locker slock -corners 00++ -cornerdelay 0 &
+LANG=C
+export LANG
+exec /usr/bin/ck-launch-session /usr/bin/dbus-launch --exit-with-session /usr/bin/vtwm

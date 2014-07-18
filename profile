@@ -29,4 +29,4 @@ if [ -f "$HOME/.esrc" ]; then
 fi
 
 # hack to get twm to work correctly
-export LC_ALL=C
+#export LC_ALL=C

@@ -1,6 +1,8 @@
 XTerm*saveLines: 10000
-XTerm*foreground: black
-XTerm*background: white
+!XTerm*foreground: black
+!XTerm*background: white
+XTerm*foreground: white
+XTerm*background: black
 XTerm*geometry: 80x50
 
 !zenburn

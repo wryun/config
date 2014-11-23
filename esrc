@@ -2,7 +2,7 @@
 # (in terms of following symlinks, colours, cd - (+ enhancements))
 
 hostname = `hostname
-noexport = $noexport prompt
+noexport = $noexport prompt history
 
 # symlink cd (and pwd)
 
@@ -84,16 +84,17 @@ let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
 }
 
 # window title
-let (parse = $fn-%parse) fn %parse prompt1 prompt2 {
-    if {~ $TERM xterm* rxvt*} {
-        echo -n \033]0\;$USER'@'$hostname': '$^pwd\007
-    }
-    cmd = <={$parse $^prompt1 $^prompt2}
-    if {~ $TERM xterm* rxvt*} {
-        echo -n \033]0\;$USER'@'$hostname': '$^cmd\007
-    }
-    return $cmd
-}
+# This messes with the results (see #10). Can't use for now.
+#let (parse = $fn-%parse) fn %parse prompt1 prompt2 {
+#    if {~ $TERM xterm* rxvt*} {
+#        echo -n \033]0\;$hostname' ('$^pwd')'\007
+#    }
+#    cmd = <={$parse $^prompt1 $^prompt2}
+#    if {~ $TERM xterm* rxvt*} {
+#        echo -n \033]0\;$^cmd' - '$hostname' ('$^pwd')'\007
+#    }
+#    return $cmd
+#}
 
 # colourful programs with arguments
 for (prog = ls grep) {
@@ -110,8 +111,8 @@ for (othergcc = g++ c++ cc) {
 }
 
 fn %prompt {
-    noexport = $noexport prompt # no reason to share this mess around
     stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
+    history = $home/.es_history
     cd . # in order to set our colourful prompt and the header
     fn %prompt # now lose the prompt function
 }

@@ -1,20 +1,34 @@
-# We want icon managers, not silly shit
-ShowIconManager
-IconifyByUnmapping
-IconManagerGeometry "2400+0+290" 10
-IconManagerDontShow { "VTWM *" "xclock" "xload" "xeyes" }
-NoTitle { "VTWM *" "xclock" "xload" "xeyes" "* {log}" }
-#DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
+#defaultFont "-bitstream-bitstream charter-medium-i-normal--0-0-0-0-p-0-iso8859-1"
+
+NoDefaults
+NoIconManagers
+RightTitleButton ":resize" = f.fullzoom
+Color {
+    BorderColor "grey50"
+}
+#IconRegion "1000x50+920+1030" South East 25 15
+#HideIconManager
+#IconifyByUnmapping
+#IconManagerGeometry "2350+1200+0" 9
+#IconManagerDontShow { "VTWM *" "xclock" "xload" "xeyes" }
+NoTitle { "VTWM *" "xclock" "xload" "xeyes" "log" }
+DontShowInDisplay { "VTWM *" "xclock" "xload" "xeyes" }
 
 # Keyboard bindings
-"t" = m4 : all : ! "xterm &"
-"b" = m4 : all : ! "firefox &"
-"c" = m4 : all : ! "google-chrome &"
+# setting UTF-8 here is a hack (vtwm doesn't deal well with wide fonts)
+"t" = m4 : all : ! "LC_ALL=en_AU.UTF-8 x-terminal-emulator &"
+"l" = m4 : all : ! "LC_ALL=en_AU.UTF-8 termlog &"
+"t" = m | m4 : all : ! "LC_ALL=en_AU.UTF-8 2screen-terminals &"
+"b" = m4 : all : ! "LC_ALL=en_AU.UTF-8 x-www-browser &"
+"c" = m4 : all : ! "LC_ALL=en_AU.UTF-8 google-chrome &"
 "a" = m4 : all : f.panleft  "100"
 "d" = m4 : all : f.panright "100"
+#"z" = m4 : all : f.bottomzoom
 
 "r" = m | m4 : all : f.restart
 "q" = m | m4 : all : f.quit
+
+#IgnoreModifiers l | m2
 
 # Mouse bindings
 Function "move-or-raise" { f.move f.deltastop f.raise }
@@ -22,15 +36,19 @@ Button1 = m4 : window : f.function "move-or-raise"
 Button2 = m4 : window : f.lower
 Button2 = m | m4 : window : f.delete
 Button3 = m4 : window : f.resize
+Button3 = m | m4 : window : f.nail
 
 # Virtual Desktops
-VirtualDesktop  "4x1+0-200"   16
+VirtualDesktop  "5x1+0-0"   15
 VirtualDesktopFont "5x7"
-NailedDown { "VTWM *" "xclock" "xeyes" "xload" }
+NailedDown { "VTWM *" }
+# NailedDown { "VTWM *" "xclock" "xeyes" "xload" }
 FixManagedVirtualGeometries
 FixTransientVirtualGeometries
+NotVirtualGeometries
 
 # other
 SqueezeTitle
 AutoRelativeResize
 
+RandomPlacement

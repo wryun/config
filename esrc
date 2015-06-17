@@ -6,11 +6,11 @@ host = `hostname
 
 # Frustratingly, BSD test doesn't support -l
 fn strlen {
-  if {~ $1 ()} {
-    return 0
-  } {
-    return `{awk 'BEGIN { print length("'^$1^'") }'}
-  }
+    if {~ $1 ()} {
+        return 0
+    } {
+        return `{awk 'BEGIN { print length("'^$1^'") }'}
+    }
 }
 
 # symlink cd (and pwd)
@@ -133,7 +133,10 @@ for (prog = grep) {
 }
 
 # CLICOLOR...
-#let (o = `{whatis ls}) fn ls {$o -G $*}
+
+if {~ $CLICOLOR ()} {
+    let (o = `{whatis ls}) fn ls {$o --color $*}
+}
 
 # colourful programs with wrappers
 # remove make... (messes with npm coloring)

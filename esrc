@@ -140,7 +140,7 @@ if {~ $CLICOLOR ()} {
 
 # colourful programs with wrappers
 # remove make... (messes with npm coloring)
-for (prog = diff gcc) {
+for (prog = make diff gcc) {
     fn $prog { color$prog $* }
 }
 

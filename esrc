@@ -6,7 +6,17 @@ noexport = $noexport prompt history
 host = `hostname
 #GNOME_KEYRING_CONTROL=
 
+
 # symlink cd (and pwd)
+
+# Frustratingly, BSD test doesn't support -l
+fn strlen {
+  if {~ $1 ()} {
+    return 0
+  } {
+    return `{awk 'BEGIN { print length("'^$1^'") }'}
+  }
+}
 
 fn pwd {
     if {~ $#cwd 0} {
@@ -79,7 +89,7 @@ let (cd = $fn-cd; cd-stack = ()) fn cd dir {
 
 fn cutdir dir {
     local (discard = (); small_dir = <={~~ $dir /*}) {
-        while {test -l $small_dir -gt 30} {
+        while {test 50 -lt <={strlen $small_dir}} {
             (discard small_dir) = <={~~ $small_dir */*}
         }
 
@@ -92,7 +102,7 @@ fn cutdir dir {
 }
 
 # colourful and informative prompt
-let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
+let (cd = $fn-cd) fn cd {
     $cd $*
     pwd = `pwd
     pwd = $^pwd
@@ -104,15 +114,6 @@ let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
 
     if {~ $pwd '/~'*} {
         pwd = <={~~ $pwd /*}
-    }
-
-    let (branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}) {
-        if {! ~ $branch ()} {
-            branch = ' ['$branch']'
-        } {
-            branch = ''
-        }
-        prompt = $c[4\;35m$z$host^$c[0m$z:$c[1\;34m$z$pwd$c[0m$z$branch'; '
     }
 }
 
@@ -130,12 +131,17 @@ let (cd = $fn-cd; c = \1\033; z=\2) fn cd {
 #}
 
 # colourful programs with arguments
-for (prog = ls grep) {
+# remove ls for OSX
+for (prog = grep) {
     let (o = `{whatis $prog}) fn $prog {$o --color\=auto $*}
 }
 
+# CLICOLOR...
+#let (o = `{whatis ls}) fn ls {$o -G $*}
+
 # colourful programs with wrappers
-for (prog = diff make gcc) {
+# remove make... (messes with npm coloring)
+for (prog = diff gcc) {
     fn $prog { color$prog $* }
 }
 
@@ -147,6 +153,19 @@ for (othergcc = g++ c++ cc) {
 fn %prompt {
     stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
     history = $home/.es_history
-    cd . # in order to set our colourful prompt and the header
-    fn %prompt # now lose the prompt function
+    cd .
+
+    fn %prompt {
+        if {~ $TERM xterm* rxvt*} {
+            echo -n \033]0\;$pwd\007
+        }
+
+        # TODO God this is ugly. Separate prompt calculation...
+        let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}) {
+            if {~ $branch ()} {branch = ''} {branch = ' ['^$branch^']'}
+            prompt = $a$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$pwd$e^'[0m'^$branch$z^\n^'; '
+        }
+    }
+
+    %prompt
 }

@@ -13,10 +13,10 @@ syntax enable
 " :au BufAdd,BufNewFile * nested tab sball
 set clipboard=unnamed
 set tags=./tags;
-set ts=4 sw=4 sts=4
 set list
 set listchars=tab:>.,trail:~
-"set ts=8 sw=4 sts=4
+set ts=2 sw=2 sts=2
+"set ts=4 sw=4 sts=4
 "set ts=8 sw=2 sts=2
 set expandtab
 set display+=lastline
@@ -31,7 +31,7 @@ set t_Co=256
 hi SpecialKey ctermfg=243 guifg=gray
 
 set foldmethod=indent
-set foldmethod=indent foldnestmax=2 fml=4
+set foldmethod=indent foldnestmax=3 fml=4
 "highlight Folded ctermfg=63 ctermbg=4 guibg=blue guifg=white
 "highlight FoldColumn ctermfg=63 ctermbg=4 guibg=blue guifg=white
 

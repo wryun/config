@@ -127,13 +127,11 @@ let (cd = $fn-cd) fn cd {
 #}
 
 # colourful programs with arguments
-# remove ls for OSX
 for (prog = grep) {
     let (o = `{whatis $prog}) fn $prog {$o --color\=auto $*}
 }
 
-# CLICOLOR...
-
+# BSD ls uses CLICOLOR
 if {~ $CLICOLOR ()} {
     let (o = `{whatis ls}) fn ls {$o --color $*}
 }

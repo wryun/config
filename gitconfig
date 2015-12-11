@@ -1,0 +1,12 @@
+[merge]
+	conflictstyle = diff3
+[user]
+	name = James Haggerty
+	email = jhaggerty@atlassian.com
+[push]
+	default = current
+[alias]
+	brsort = for-each-ref --sort\\=committerdate --format\\=\"%(committerdate:short)   %(refname:short)\" refs/heads/
+	lmf = log -m --first-parent
+[url "stash.atlassian.com:"]
+	insteadOf = https://stash.atlassian.com/scm

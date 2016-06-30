@@ -7,6 +7,8 @@
 	default = current
 [alias]
 	brsort = for-each-ref --sort\\=committerdate --format\\=\"%(committerdate:short)   %(refname:short)\" refs/heads/
-	lmf = log -m --first-parent
+	lg = log -w -m --first-parent
+	lgp = log -w -m -p --first-parent
+	lgpf = log -w -m -p --first-parent --follow
 [url "stash.atlassian.com:"]
 	insteadOf = https://stash.atlassian.com/scm

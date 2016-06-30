@@ -1,9 +1,11 @@
 # this file basically makes 'es' look more like a modern bash prompt
 # (in terms of following symlinks, colours, cd - (+ enhancements))
 
-noexport = $noexport history
+# disabled for screen...
+#noexport = $noexport history
 host = `hostname
 path = ( ~/local/bin $path )
+EDITOR = `{which vim}
 
 # Frustratingly, BSD test doesn't support -l
 fn strlen {
@@ -149,7 +151,31 @@ for (othergcc = g++ c++ cc) {
 
 # Useful utils
 fn lc {
-  tac ~/.es_history | grep -v '^lc ' | grep $^* | head -n 20 | tac
+  fn searchcommandhistory {
+    grep -v '^lc ' ~/.es_history | grep $1
+  }
+
+  if {~ $#* 1 || ~ $#* 0} {
+    searchcommandhistory $1 | nl | tail -20
+  } {
+    eval `{searchcommandhistory $1 | sed -n $2^p}
+  }
+}
+
+fn fv {
+  if {~ $#* 1 || ~ $#* 0} {
+    vi `{find . -name $1^* | head -1}
+  } {
+    vi `{find . -name '*'^$1^'*' | sed -n $2^p}
+  }
+}
+
+fn f {
+  if {~ $#* 1 || ~ $#* 0} {
+    find . -name '*'^$1^'*' | nl
+  } {
+    find . -name '*'^$1^'*' | sed -n $2^p
+  }
 }
 
 # what to do for an interactive session

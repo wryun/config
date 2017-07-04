@@ -5,6 +5,7 @@
 #noexport = $noexport history
 host = `hostname
 path = ( ~/local/bin $path )
+N_PREFIX = ~/local
 EDITOR = `{which vim}
 
 # Frustratingly, BSD test doesn't support -l

@@ -12,3 +12,5 @@
 	lgpf = log -w -m -p --first-parent --follow
 [url "stash.atlassian.com:"]
 	insteadOf = https://stash.atlassian.com/scm
+[core]
+	pager = less -+X -+F

@@ -1,4 +1,4 @@
-execute pathogen#infect()
+"execute pathogen#infect()
 
 " Defaults
 set nocompatible
@@ -28,7 +28,7 @@ set linebreak
 set nobackup
 set viminfo=
 
-color elflord
+"color elflord
 "set t_Co=256
 "hi SpecialKey ctermfg=243 guifg=gray
 
@@ -42,3 +42,4 @@ set foldmethod=indent foldnestmax=3 fml=4
 "map <C-n> :cn<CR>
 "map <C-p> :cp<CR>
 autocmd FileType typescript setlocal completeopt+=menu,preview
+au BufRead,BufNewFile *.pony set filetype=pony

@@ -4,7 +4,8 @@
 # disabled for screen...
 #noexport = $noexport history
 host = `hostname
-path = ( ~/local/bin $path )
+path = ( ~/local/bin ~/go/bin $path )
+GOPATH = ~/go
 N_PREFIX = ~/local
 EDITOR = `{which vim}
 
@@ -132,22 +133,18 @@ let (cd = $fn-cd) fn cd {
 
 # colourful programs with arguments
 for (prog = grep) {
-    let (o = `{whatis $prog}) fn $prog {$o --color\=auto $*}
+    let (o = `{which $prog}) fn $prog {$o --color\=auto $*}
 }
 
 # BSD ls uses CLICOLOR
 if {~ $CLICOLOR ()} {
-    let (o = `{whatis ls}) fn ls {$o --color $*}
+    let (o = `{which ls}) fn ls {$o --color\=auto $*}
 }
 
 # colourful programs with wrappers
 # remove make... (messes with npm coloring)
-for (prog = make diff gcc) {
+for (prog = diff) {
     fn $prog { color$prog $* }
-}
-
-for (othergcc = g++ c++ cc) {
-    fn $othergcc { colorgcc $* }
 }
 
 # Useful utils

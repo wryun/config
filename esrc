@@ -4,7 +4,7 @@
 # disabled for screen...
 #noexport = $noexport history
 host = `hostname
-path = ( ~/local/bin ~/go/bin $path )
+path = ( ~/.local/bin ~/go/bin $path )
 GOPATH = ~/go
 N_PREFIX = ~/local
 EDITOR = `{which vim}

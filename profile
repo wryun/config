@@ -17,8 +17,8 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 # set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
 fi
 
 # load .esrc environment (god, is there a better way?)
@@ -32,5 +32,5 @@ fi
 # export LC_ALL=C
 
 # Needed to get accel layers in Firefox
-MOZ_USE_OMTC=1
-export MOZ_USE_OMTC
+#MOZ_USE_OMTC=1
+#export MOZ_USE_OMTC

@@ -25,7 +25,7 @@ fi
 if [ -f "$HOME/.esrc" ]; then
     eval "`es -l <<-x
         sh <<<'export -p'
-    x`"
+x`"
 fi
 
 # hack to get twm to work correctly

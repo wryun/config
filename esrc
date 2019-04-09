@@ -180,6 +180,7 @@ fn f {
 fn %prompt {
     stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
     history = $home/.es_history
+    eval `{gnome-keyring-daemon --start}
     cd .
 
     fn %prompt {

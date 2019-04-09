@@ -1,5 +1,9 @@
 # this file basically makes 'es' look more like a modern bash prompt
 # (in terms of following symlinks, colours, cd - (+ enhancements))
+#
+
+# So we don't check custom environment into git...
+. ~/.local_env
 
 # disabled for screen...
 #noexport = $noexport history
@@ -8,6 +12,9 @@ path = ( ~/.local/bin ~/go/bin $path )
 GOPATH = ~/go
 N_PREFIX = ~/local
 EDITOR = `{which vim}
+
+GID = `{id -g}
+UID = `{id -u}
 
 # Frustratingly, BSD test doesn't support -l
 fn strlen {

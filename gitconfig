@@ -2,7 +2,7 @@
 	conflictstyle = diff3
 [user]
 	name = James Haggerty
-	email = james.haggerty@gmail.com
+	email = jamesh@groklearning.com
 [push]
 	default = current
 [alias]

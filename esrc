@@ -11,10 +11,16 @@ host = `hostname
 path = ( ~/.local/bin ~/go/bin $path )
 GOPATH = ~/go
 N_PREFIX = ~/local
-EDITOR = `{which vim}
+EDITOR = `{which vi}
+COMPOSE_DOCKER_CLI_BUILD = 1
+DOCKER_BUILDKIT = 1
 
 GID = `{id -g}
 UID = `{id -u}
+
+fn dcr {
+  docker-compose run --no-deps --rm $*
+}
 
 # Frustratingly, BSD test doesn't support -l
 fn strlen {
@@ -157,7 +163,7 @@ for (prog = diff) {
 # Useful utils
 fn lc {
   fn searchcommandhistory {
-    grep -v '^lc ' ~/.es_history | grep $1
+    grep -av '^lc ' ~/.es_history | grep -a $1
   }
 
   if {~ $#* 1 || ~ $#* 0} {
@@ -197,14 +203,17 @@ fn %prompt {
             }
 
             # TODO God this is ugly. Separate prompt calculation...
-            let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME) {
+            let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME; venv=$VIRTUAL_ENV) {
                 if {!~ $branch ()} {
                     branch = ' ['^$branch^']'
                 }
                 if {!~ $aws-role ()} {
                     aws-role = ' | '^$aws-role' ('`{expr '(' `{date +%s} - $AWS_SAML_TIME ')' / 60}'mins)'
                 }
-                prompt = $a$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$z^\n^'; '
+                if {!~ $VIRTUAL_ENV ()} {
+                    venv = ' | '^`{basename $venv}
+                }
+                prompt = $a$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
             }
 
             bqstatus = $old-bqstatus

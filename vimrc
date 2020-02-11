@@ -29,6 +29,7 @@ set nobackup
 set viminfo=
 
 "color elflord
+"colorscheme elflord
 "set t_Co=256
 "hi SpecialKey ctermfg=243 guifg=gray
 
@@ -43,3 +44,12 @@ set foldmethod=indent foldnestmax=3 fml=4
 "map <C-p> :cp<CR>
 autocmd FileType typescript setlocal completeopt+=menu,preview
 au BufRead,BufNewFile *.pony set filetype=pony
+
+set title
+
+highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
+
+set ts=8 sw=2 sts=2

@@ -33,8 +33,8 @@ set viminfo=
 "set t_Co=256
 "hi SpecialKey ctermfg=243 guifg=gray
 
-set foldmethod=indent
-set foldmethod=indent foldnestmax=3 fml=4
+"set foldmethod=indent
+"set foldmethod=indent foldnestmax=3 fml=4
 "highlight Folded ctermfg=63 ctermbg=4 guibg=blue guifg=white
 "highlight FoldColumn ctermfg=63 ctermbg=4 guibg=blue guifg=white
 

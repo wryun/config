@@ -27,10 +27,3 @@ if [ -f "$HOME/.esrc" ]; then
         sh <<<'export -p'
 x`"
 fi
-
-# hack to get twm to work correctly
-# export LC_ALL=C
-
-# Needed to get accel layers in Firefox
-#MOZ_USE_OMTC=1
-#export MOZ_USE_OMTC

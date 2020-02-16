@@ -3,9 +3,9 @@
 local lexers = vis.lexers
 local bright_green = 'fore:#00aa00,bold'
 local bright_red = 'fore:#aa0000,bold'
-local amber = 'fore:#aa7720,back:#000000'
+-- local amber = 'fore:#aa7720,back:#000000'
 
-lexers.STYLE_DEFAULT = amber
+lexers.STYLE_DEFAULT = ''
 lexers.STYLE_NOTHING = ''
 lexers.STYLE_CLASS = ''
 lexers.STYLE_COMMENT = 'fore:#87af87'

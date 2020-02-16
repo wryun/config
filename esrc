@@ -3,7 +3,9 @@
 #
 
 # So we don't check custom environment into git...
-. ~/.local_env
+if {test -e ~/.local_env} {
+  . ~/.local_env
+}
 
 # disabled for screen...
 #noexport = $noexport history
@@ -154,12 +156,6 @@ if {~ $CLICOLOR ()} {
     let (o = `{which ls}) fn ls {$o --color\=auto $*}
 }
 
-# colourful programs with wrappers
-# remove make... (messes with npm coloring)
-for (prog = diff) {
-    fn $prog { color$prog $* }
-}
-
 # Useful utils
 fn lc {
   fn searchcommandhistory {
@@ -189,11 +185,19 @@ fn f {
   }
 }
 
+fn jh {
+  jp --color always '@' $*
+}
+
+fn xh {
+  xmllint --format - | source-highlight -s xml -f esc
+}
+
 # what to do for an interactive session
 fn %prompt {
     stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
     history = $home/.es_history
-    eval `{gnome-keyring-daemon --start}
+    # eval `{gnome-keyring-daemon --start}
     cd .
 
     fn %prompt {

@@ -7,6 +7,7 @@
 	default = current
 [alias]
 	brsort = for-each-ref --sort\\=committerdate --format\\=\"%(committerdate:short)   %(refname:short)\" refs/heads/
+	bl = blame -w -m --first-parent
 	lg = log -w -m --first-parent
 	lgp = log -w -m -p --first-parent
 	lgpf = log -w -m -p --first-parent --follow
@@ -14,3 +15,5 @@
 	insteadOf = https://stash.atlassian.com/scm
 [core]
 	pager = less -+X -+F
+[diff]
+	algorithm = histogram

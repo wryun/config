@@ -7,18 +7,21 @@ if {test -e ~/.local_env} {
   . ~/.local_env
 }
 
-# disabled for screen...
-#noexport = $noexport history
-host = `hostname
-path = ( ~/.local/bin ~/go/bin $path )
+# Settings
+DENO_INSTALL = ~/.deno
 GOPATH = ~/go
 N_PREFIX = ~/local
 EDITOR = `{which vi}
 COMPOSE_DOCKER_CLI_BUILD = 1
 DOCKER_BUILDKIT = 1
-
 GID = `{id -g}
 UID = `{id -u}
+
+# disabled for screen...
+#noexport = $noexport history
+
+host = `hostname
+path = ( ~/.local/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
 
 fn dcr {
   docker-compose run --no-deps --rm $*

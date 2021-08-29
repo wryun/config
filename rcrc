@@ -1,0 +1,22 @@
+history=$home^/.history
+host = `hostname
+XDG_RUNTIME_DIR=`{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
+
+fn prompt {
+  echo
+  pwd
+}
+
+fn lc {
+  head -n -1 $history | grep -i $* | grep -v '^lc '
+}
+
+fn ls {
+  builtin ls --color $*
+}
+
+fn prompt {
+  e =  pwd = `pwd {
+    echo $e'[4;35m'$host$e'[0m:'$e'[1;34m'$pwd$e'[0m'$branch
+  }
+}

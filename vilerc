@@ -1,0 +1,4 @@
+source "filters.rc"
+setv $autocolor-hook HighlightFilterMsg
+setv $read-hook HighlightFilterMsg
+set autocolor=3000

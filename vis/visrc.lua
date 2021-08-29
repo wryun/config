@@ -7,6 +7,7 @@ end)
 
 vis.events.subscribe(vis.events.WIN_OPEN, function(win)
   -- Your per window configuration options e.g.
+  -- vis:command('syntax off')
   vis:command('set tabwidth 2')
   vis:command('set expandtab')
   vis:command('set show-tabs')

@@ -1,4 +1,10 @@
+" Set up syntax highlighting
 source "filters.rc"
 setv $autocolor-hook HighlightFilterMsg
 setv $read-hook HighlightFilterMsg
-set autocolor=3000
+set autocolor=2000
+
+" Vim-ish key memory hacks...
+bind-key undo-changes-backward u
+bind-key redo-changes-forward ^R
+set undolimit 25

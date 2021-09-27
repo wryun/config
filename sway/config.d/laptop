@@ -1,0 +1,44 @@
+input "1267:42:Elan_Touchpad" {
+  dwt enabled
+  tap enabled
+}
+
+input "*" {
+ xkb_options caps:super
+}
+
+input "1:1:AT_Translated_Set_2_keyboard" {
+  xkb_model chromebook 
+}
+
+output "eDP-1" pos 0 0
+output "HDMI-A-1" pos 1368 -600
+
+#exec swayidle -w \
+#         timeout 300 'swaylock -f -c 000000' \
+#         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'
+#         before-sleep 'swaylock -f -c 000000'
+
+exec exec swayidle idlehint 60
+
+bar {
+  status_command exec ~/.cargo/bin/i3status-rs
+  mode dock
+}
+
+font 'Cantarell 10'
+
+bindsym XF86AudioRaiseVolume exec exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86MonBrightnessDown exec exec light -U 5
+bindsym XF86MonBrightnessUp exec exec light -A 5
+
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [title="nmtui"] floating enable
+
+#exec exec nm-applet --indicator
+#exec exec blueman-applet
+exec exec mako

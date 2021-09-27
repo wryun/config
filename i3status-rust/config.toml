@@ -1,0 +1,45 @@
+icons = "awesome"
+
+[[block]]
+block = "memory"
+display_type = "memory"
+format_mem = "{mem_used_percents}"
+format_swap = "{swap_used_percents}"
+
+[[block]]
+block = "cpu"
+interval = 20
+
+[[block]]
+block = "load"
+interval = 20
+format = "{1m}"
+
+[[block]]
+block = "bluetooth"
+mac = "00:1F:20:03:4A:C3"
+format = "M"
+format_unavailable = "M x"
+
+[[block]]
+block = "networkmanager"
+on_click = "exec footclient -T nmtui nmtui"
+device_format = "{icon}{ap}"
+
+[[block]]
+block = "sound"
+on_click = "pavucontrol"
+
+[[block]]
+block = "backlight"
+device = "intel_backlight"
+
+[[block]]
+block = "battery"
+interval = 20
+format = "{percentage} {time}"
+
+[[block]]
+block = "time"
+interval = 20
+format = "%a %d/%m %R"

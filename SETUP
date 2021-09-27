@@ -1,5 +1,9 @@
 #!/bin/bash
 
 for f; do
-    ln -sf config/$f ~/.$f
+    if [ -d $f ]; then
+        ln -sf ../config/$f ~/.config/$f
+    else
+        ln -sf config/$f ~/.$f
+    fi
 done

@@ -1,10 +1,21 @@
-history=$home^/.history
-host = `hostname
-XDG_RUNTIME_DIR=`{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
+history = $home^/.history
+XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
 
-fn prompt {
-  echo
-  pwd
+path = ($home^/.local/bin $path)
+
+fn cd {
+  cd_history = ( `pwd $cd_history(`{seq 7}) )
+  builtin cd $*
+}
+
+fn cdd {
+  if (~ $#* 0 ) {
+    for (i in `{seq 8}) {
+      echo $i - $cd_history($i)
+    }
+  } else {
+    cd $cd_history($1)
+  }
 }
 
 fn lc {
@@ -15,8 +26,9 @@ fn ls {
   builtin ls --color $*
 }
 
+_prompt_host = `hostname
 fn prompt {
   e =  pwd = `pwd {
-    echo $e'[4;35m'$host$e'[0m:'$e'[1;34m'$pwd$e'[0m'$branch
+    echo $e'[4;35m'$_prompt_host$e'[0m:'$e'[1;34m'$pwd$e'[0m'$branch
   }
 }

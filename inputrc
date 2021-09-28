@@ -1,2 +1,7 @@
-C-B:  backward-word
-C-F:  forward-word
+set expand-tilde On
+
+# If we're having Meta trouble...
+# C-B:  backward-word
+# C-F:  forward-word
+
+$include /etc/inputrc

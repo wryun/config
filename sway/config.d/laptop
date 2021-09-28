@@ -7,6 +7,7 @@ input "1:1:AT_Translated_Set_2_keyboard" {
   xkb_model chromebook 
 }
 
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 output "eDP-1" pos 0 0
 output "HDMI-A-1" pos 1368 -600
 
@@ -33,7 +34,11 @@ bindsym XF86MonBrightnessUp exec exec light -A 5
 
 for_window [app_id="pavucontrol"] floating enable
 for_window [app_id="nm-connection-editor"] floating enable
+for_window [app_id="claws"] layout tabbed
 for_window [title="nmtui"] floating enable
+for_window [title="rundialog"] floating enable
+
+bindsym $mod+Shift+r exec exec footclient -T rundialog -w 30x1 rundialog
 
 #exec exec nm-applet --indicator
 #exec exec blueman-applet

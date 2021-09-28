@@ -1,9 +1,3 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
-# Read `man 5 sway` for a complete reference.
-
 input "*" {
  xkb_options caps:super
 }
@@ -36,6 +30,9 @@ set $term footclient
 
     # Kill focused window
     bindsym $mod+Shift+q kill
+
+    # Middle click window kill
+    bindsym button2 kill
 
     # Start your launcher
     #bindsym $mod+d exec $menu

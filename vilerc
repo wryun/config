@@ -9,14 +9,16 @@ bind-key undo-changes-backward u
 bind-key redo-changes-forward ^R
 set undolimit 25
 
+" xterm-ish
+set xterm-mouse xterm-title
+
 set shiftwidth=4 tabstop=4 notabinsert
 "set list
 
 " cmode overrides the above behaviour anyway...
-" These are (something) like mgr style C settings.
 define-mode c
 ~with define-submode c
-  ts=3
-  sw=3
+  ts=4
+  sw=4
   notabinsert
 ~endwith

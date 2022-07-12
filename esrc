@@ -7,11 +7,12 @@ if {test -e ~/.local_env} {
   . ~/.local_env
 }
 
+XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
+
 # Settings
 DENO_INSTALL = ~/.deno
 GOPATH = ~/go
 N_PREFIX = ~/local
-EDITOR = `{which vi}
 COMPOSE_DOCKER_CLI_BUILD = 1
 DOCKER_BUILDKIT = 1
 GID = `{id -g}
@@ -22,6 +23,9 @@ UID = `{id -u}
 
 host = `hostname
 path = ( ~/.local/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+
+EDITOR = `{which vi}
+PAGER = `{which less}
 
 fn dcr {
   docker-compose run --no-deps --rm $*

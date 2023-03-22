@@ -7,7 +7,8 @@ if {test -e ~/.local_env} {
   . ~/.local_env
 }
 
-XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
+# Put this in .local_env if running some weird non-systemd setup (i.e. Void).
+# XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
 
 # Settings
 DENO_INSTALL = ~/.deno
@@ -22,7 +23,7 @@ UID = `{id -u}
 #noexport = $noexport history
 
 host = `hostname
-path = ( ~/.local/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+path = ( ~/.local/bin ~/.cargo/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
 
 EDITOR = `{which vi}
 PAGER = `{which less}

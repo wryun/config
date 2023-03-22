@@ -1,0 +1,35 @@
+output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+
+exec swayidle -w \
+         timeout 100 'swaylock -f -c 000000' \
+         timeout 200 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
+         timeout 300 'systemctl suspend' \
+         before-sleep 'swaylock -f -c 000000'
+
+exec exec swayidle idlehint 60
+
+bar {
+  status_command exec ~/.cargo/bin/i3status-rs
+  mode dock
+}
+
+font 'Cantarell 10'
+
+bindsym XF86AudioRaiseVolume exec exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86MonBrightnessDown exec exec light -U 5
+bindsym XF86MonBrightnessUp exec exec light -A 5
+
+for_window [app_id="pavucontrol"] floating enable
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [app_id="claws"] layout tabbed
+for_window [title="nmtui"] floating enable
+for_window [title="rundialog"] floating enable
+
+bindsym $mod+Shift+r exec exec footclient -T rundialog -w 30x1 rundialog
+
+#exec exec nm-applet --indicator
+#exec exec blueman-applet
+exec exec mako

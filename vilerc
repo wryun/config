@@ -9,7 +9,11 @@ set autocolor=2000
 " Vim-ish key memory hacks...
 bind-key undo-changes-backward u
 bind-key redo-changes-forward ^R
-set undolimit 25
+set undolimit 200
+store-procedure kill-current-buffer
+  kill-buffer $cbufname
+~endm
+bind-key kill-current-buffer ^X-^K
 
 " xterm-ish
 set xterm-mouse xterm-title
@@ -17,10 +21,8 @@ set xterm-mouse xterm-title
 set shiftwidth=4 tabstop=4 notabinsert
 "set list
 
-" cmode overrides the above behaviour anyway...
 define-mode c
 ~with define-submode c
   ts=4
   sw=4
-  notabinsert
 ~endwith

@@ -24,6 +24,6 @@ fi
 # load .esrc environment (god, is there a better way?)
 if [ -f "$HOME/.esrc" ]; then
     eval "`es -l <<-x
-        sh <<<'export -p'
+        sh <<<'export -p | grep -v UID='
 x`"
 fi

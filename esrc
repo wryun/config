@@ -12,6 +12,7 @@ XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
 # Settings
 DENO_INSTALL = ~/.deno
 GOPATH = ~/go
+PYENV_ROOT = ~/.pyenv
 N_PREFIX = ~/local
 COMPOSE_DOCKER_CLI_BUILD = 1
 DOCKER_BUILDKIT = 1
@@ -22,7 +23,7 @@ UID = `{id -u}
 #noexport = $noexport history
 
 host = `hostname
-path = ( ~/.local/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+path = ( ~/.local/bin ~/.pyenv/bin ~/.pyenv/shims $DENO_INSTALL^/bin $GOPATH^/bin $path )
 
 EDITOR = `{which vi}
 PAGER = `{which less}
@@ -140,18 +141,46 @@ let (cd = $fn-cd) fn cd {
     }
 }
 
-# window title
-# This messes with the results (see #10). Can't use for now.
-#let (parse = $fn-%parse) fn %parse prompt1 prompt2 {
-#    if {~ $TERM xterm* rxvt*} {
-#        echo -n \033]0\;$pwd' ('$USER'@'$host')'\007
-#    }
-#    cmd = <={$parse $prompt1 $prompt2}
-#    if {~ $TERM xterm* rxvt*} {
-#        echo -n \033]0\;$^cmd' ('$USER'@'$host')'\007
-#    }
-#    return $cmd
-#}
+fn %interactive-loop {
+    let (result = <=true) {
+        catch @ e type msg {
+            if {~ $e eof} {
+                return $result
+            } {~ $e exit} {
+                throw $e $type $msg
+            } {~ $e error} {
+                echo >[1=2] $msg
+                $fn-%dispatch false
+            } {~ $e signal} {
+                if {!~ $type sigint sigterm sigquit} {
+                    echo >[1=2] caught unexpected signal: $type
+                }
+            } {
+                echo >[1=2] uncaught exception: $e $type $msg
+            }
+            throw retry # restart forever loop
+        } {
+            _parse_elapsed = 0
+
+            forever {
+                let (old-bqstatus = $bqstatus) {
+                    if {!~ $#fn-%prompt 0} {
+                        %prompt
+                    }
+                    let (code = <={%parse $prompt}) {
+                        if {!~ $#code 0} {
+                            let (start_time = `{date +%s}) {
+                                bqstatus = $old-bqstatus
+                                result = <={$fn-%dispatch $code}
+                                _parse_elapsed = `{expr `{date +%s} - $start_time}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 # colourful programs with arguments
 for (prog = grep) {
@@ -208,26 +237,22 @@ fn %prompt {
     cd .
 
     fn %prompt {
-        let (old-bqstatus = $bqstatus) {
-            if {~ $TERM xterm* rxvt*} {
-                echo -n \033]0\;$promptwd\007
-            }
+        if {~ $TERM xterm* rxvt*} {
+            echo -n \033]0\;$promptwd\007
+        }
 
-            # TODO God this is ugly. Separate prompt calculation...
-            let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME; venv=$VIRTUAL_ENV) {
-                if {!~ $branch ()} {
-                    branch = ' ['^$branch^']'
-                }
-                if {!~ $aws-role ()} {
-                    aws-role = ' | '^$aws-role' ('`{expr '(' `{date +%s} - $AWS_SAML_TIME ')' / 60}'mins)'
-                }
-                if {!~ $VIRTUAL_ENV ()} {
-                    venv = ' | '^`{basename $venv}
-                }
-                prompt = $a$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
+        # TODO God this is ugly. Separate prompt calculation...
+        let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME; venv=$VIRTUAL_ENV) {
+            if {!~ $branch ()} {
+                branch = ' ['^$branch^']'
             }
-
-            bqstatus = $old-bqstatus
+            if {!~ $aws-role ()} {
+                aws-role = ' | '^$aws-role' ('`{expr '(' `{date +%s} - $AWS_SAML_TIME ')' / 60}'mins)'
+            }
+            if {!~ $VIRTUAL_ENV ()} {
+                venv = ' | '^`{basename $venv}
+            }
+            prompt = $a'('$_parse_elapsed') '$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
         }
     }
 

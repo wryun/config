@@ -1,4 +1,4 @@
-set expand-tilde On
+# set expand-tilde On
 
 # If we're having Meta trouble...
 # C-B:  backward-word

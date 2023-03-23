@@ -1,3 +1,5 @@
+set noautobuffer
+
 " Set up syntax highlighting
 source "filters.rc"
 setv $autocolor-hook HighlightFilterMsg

@@ -18,11 +18,19 @@ bind-key kill-current-buffer ^X-^K
 " xterm-ish
 set xterm-mouse xterm-title
 
-set shiftwidth=4 tabstop=4 notabinsert
+set shiftwidth=4 tabstop=4
 "set list
 
 define-mode c
 ~with define-submode c
   ts=4
   sw=4
+~endwith
+
+define-mode py
+~with define-submode py
+  ts=4
+  sw=4
+  ai
+  notabinsert
 ~endwith

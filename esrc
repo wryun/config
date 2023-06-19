@@ -143,7 +143,7 @@ let (cd = $fn-cd) fn cd {
 }
 
 fn %interactive-loop {
-    let (result = <=true) {
+    let (result = <=true; parse_elapsed = 0) {
         catch @ e type msg {
             if {~ $e eof} {
                 return $result
@@ -161,19 +161,19 @@ fn %interactive-loop {
             }
             throw retry # restart forever loop
         } {
-            _parse_elapsed = 0
-
             forever {
                 let (old-bqstatus = $bqstatus) {
                     if {!~ $#fn-%prompt 0} {
-                        %prompt
+                        local (_parse_elapsed = $parse_elapsed; _result = $result) {
+                            %prompt
+                        }
                     }
                     let (code = <={%parse $prompt}) {
                         if {!~ $#code 0} {
                             let (start_time = `{date +%s}) {
                                 bqstatus = $old-bqstatus
                                 result = <={$fn-%dispatch $code}
-                                _parse_elapsed = `{expr `{date +%s} - $start_time}
+                                parse_elapsed = `{expr `{date +%s} - $start_time}
                             }
                         }
                     }
@@ -253,7 +253,7 @@ fn %prompt {
             if {!~ $VIRTUAL_ENV ()} {
                 venv = ' | '^`{basename $venv}
             }
-            prompt = $a'('$_parse_elapsed') '$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
+            prompt = $a'^='$_result' ('$_parse_elapsed') '$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
         }
     }
 

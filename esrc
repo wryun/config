@@ -24,7 +24,7 @@ UID = `{id -u}
 #noexport = $noexport history
 
 host = `hostname
-path = ( ~/.local/bin ~/.pyenv/bin ~/.pyenv/shims ~/.cargo/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+path = ( ~/.local/bin ~/.bun/bin ~/.pyenv/bin ~/.pyenv/shims ~/.cargo/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
 
 EDITOR = `{which vi}
 PAGER = `{which less}

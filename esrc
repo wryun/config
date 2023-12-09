@@ -33,6 +33,14 @@ fn dcr {
   docker-compose run --no-deps --rm $*
 }
 
+fn x {
+  sh -c $^*
+}
+
+fn a {
+  /bin/bash --init-file <{cat $1/bin/activate; echo 'exec es'}
+}
+
 # Frustratingly, BSD test doesn't support -l
 fn strlen {
     if {~ $1 ()} {

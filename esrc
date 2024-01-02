@@ -2,29 +2,22 @@
 # (in terms of following symlinks, colours, cd - (+ enhancements))
 #
 
-# So we don't check custom environment into git...
-if {test -e ~/.local_env} {
-  . ~/.local_env
-}
-
-# Put this in .local_env if running some weird non-systemd setup (i.e. Void).
+# Put this in .esrc_local if running some weird non-systemd setup (i.e. Void).
 # XDG_RUNTIME_DIR = `{mktemp -d -t xdg_runtime_dir.$USER.XXXX}
 
 # Settings
 DENO_INSTALL = ~/.deno
 GOPATH = ~/go
 PYENV_ROOT = ~/.pyenv
-N_PREFIX = ~/local
+N_PREFIX = ~/.local
 COMPOSE_DOCKER_CLI_BUILD = 1
 DOCKER_BUILDKIT = 1
 GID = `{id -g}
 UID = `{id -u}
 
-# disabled for screen...
-#noexport = $noexport history
-
-host = `hostname
-path = ( ~/.local/bin ~/.pyenv/bin ~/.pyenv/shims ~/.cargo/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+if {!~ $path $home/.bun/bin} {
+  path = ( ~/.local/bin ~/.bun/bin ~/.pyenv/bin ~/.pyenv/shims ~/.cargo/bin $DENO_INSTALL^/bin $GOPATH^/bin $path )
+}
 
 EDITOR = `{which vi}
 PAGER = `{which less}
@@ -33,120 +26,101 @@ fn dcr {
   docker-compose run --no-deps --rm $*
 }
 
-# Frustratingly, BSD test doesn't support -l
-fn strlen {
-    if {~ $1 ()} {
-        return 0
-    } {
-        return `{awk 'BEGIN { print length("'^$1^'") }'}
-    }
+fn x {
+  sh -c $^*
 }
 
-# symlink cd (and pwd)
-fn pwd {
-    if {~ $#cwd 0} {
-        noexport = $noexport cwd
-        cwd = `` \n /bin/pwd
-    }
-    echo $cwd
+fn a {
+  echo Entering virtualenv "$1" in a subshell (i.e. type "exit" to exit)...
+  /bin/bash --init-file <{cat $1/bin/activate; echo 'exec es'}
 }
-let (cd = $fn-cd) fn cd dir {
-    if {~ $#cwd 0} {
-        noexport = $noexport cwd
+
+# Make cd significantly more magical:
+# - track working directory following symlinks (for pwd)
+# - maintain a history of dirs (accessible via cd -0 for all, cd -1 etc.)
+# - calls fn-cd-change if it exists (e.g. for updating prompt).
+let (
+    cwd=`` \n /bin/pwd  # current working directory (using symlinks)
+    cd-history=()  # history of directories
+) {
+    fn pwd {  # pwd showing symlinks
+        echo $cwd
     }
-    if {~ $#dir 0} {
-        $cd
-        cwd = ~
-    } {
-        let (current = <={
-            if {~ $dir /*} {
-                result
-            } {
-                if {~ $#cwd 0} {
-                    cwd = `` \n /bin/pwd
-                }
-                %split / $cwd
-            }
-        }) {
-            for (name = <={%split / $dir}) {
-                if {~ $name ..} {
-                    if {!~ $#current 0} {
-                        let (x = 1 $current) current = $x(2 ... $#current)
+
+    let (proposed_dir=()) fn cd dir {
+        if {! {~ $#dir 0 || ~ $#dir 1}} {
+            throw error cd 'usage: cd [directory]'
+        }
+
+        proposed_dir = <={match $dir (
+            () {
+                if {!~ $#home 1} {
+                    throw error cd <={
+                        if {~ $#home 0} {
+                            result 'cd: no home directory'
+                        } {
+                            result 'cd: home directory must be one word'
+                        }
                     }
-                } {!~ $name . ''} {
-                    current = $current $name
                 }
+                result $home
             }
-            let (path = / ^ <={ %flatten / $current }) {
-                $cd $path
-                cwd = $path
-            }
-        }
-    }
-}
 
-# go back -N directories in cd (cd -0 prints stack, cd - goes to previous)
-#
-let (cd = $fn-cd; cd-stack = ()) fn cd dir { 
-    let (old = `pwd) {
-        if {~ $dir -*} {
-            let (index = <={~~ $dir -*}) {
-                if {~ $index ''} {
-                    index = 1
-                }
-                if {~ $index [1-9]} {
-                    dir = $cd-stack($index)
-                } {~ $index 0} {
-                    for (i = `{seq $#cd-stack}) {
-                        echo $i - $cd-stack($i)
+            -* {
+                let (index = <={~~ $dir -*}) {
+                    if {~ $index ''} {
+                        index = 1
                     }
-                    return 0
-                } {
-                    throw error cd 'cd: invalid argument'
+                    if {~ $index [1-9]} {
+                        result $cd-history($index)
+                    } {~ $index 0} {
+                        for (i = `{seq $#cd-history}) {
+                            echo $i - $cd-history($i)
+                        }
+                        return 0
+                    } {
+                        throw error cd 'cd: invalid history argument'
+                    }
                 }
             }
+
+            * {
+                let (current = <={
+                    if {~ $dir /*} {
+                        result
+                    } {
+                        %split / $cwd
+                    }
+                }) {
+                    for (name = <={%split / $dir}) {
+                        if {~ $name ..} {
+                            if {!~ $#current 0} {
+                                let (x = 1 $current) current = $x(2 ... $#current)
+                            }
+                        } {!~ $name . ''} {
+                            current = $current $name
+                        }
+                    }
+                    result / ^ <={ %flatten / $current }
+                }
+            }
+        )}
+
+        $&cd $proposed_dir
+        cd-history = ($cwd $cd-history(1 ... 8))
+        cwd = $proposed_dir
+
+        if {! ~ $fn-cd-change ()} {
+            cd-change $cwd
         }
-        $cd $dir
-        cd-stack = ($old $cd-stack(1 ... 8))
-    }
-}
-
-
-fn cutdir dir {
-    local (discard = (); small_dir = <={~~ $dir /*}) {
-        while {test 50 -lt <={strlen $small_dir}} {
-            (discard small_dir) = <={~~ $small_dir */*}
-        }
-
-        if {~ $discard ()} {
-            return $dir
-        } {
-            return .../$small_dir
-        }
-    }
-}
-
-# make cd calculate current directory in pretty form
-let (cd = $fn-cd) fn cd {
-    $cd $*
-    promptwd = `pwd
-    promptwd = $^promptwd
-    if {~ $promptwd $home^*} {
-        promptwd = '/~'^<={~~ $promptwd $home^*}
-    }
-
-    promptwd = <={cutdir $promptwd}
-
-    if {~ $promptwd '/~'*} {
-        promptwd = <={~~ $promptwd /*}
     }
 }
 
 fn %interactive-loop {
-    let (result = <=true; parse_elapsed = 0) {
+    let (status = <=true; parse_elapsed = 0) {
         catch @ e type msg {
             if {~ $e eof} {
-                return $result
+                return $status
             } {~ $e exit} {
                 throw $e $type $msg
             } {~ $e error} {
@@ -164,15 +138,13 @@ fn %interactive-loop {
             forever {
                 let (old-bqstatus = $bqstatus) {
                     if {!~ $#fn-%prompt 0} {
-                        local (_parse_elapsed = $parse_elapsed; _result = $result) {
-                            %prompt
-                        }
+                        %prompt $parse_elapsed $status
                     }
                     let (code = <={%parse $prompt}) {
                         if {!~ $#code 0} {
                             let (start_time = `{date +%s}) {
                                 bqstatus = $old-bqstatus
-                                result = <={$fn-%dispatch $code}
+                                status = <={$fn-%dispatch $code}
                                 parse_elapsed = `{expr `{date +%s} - $start_time}
                             }
                         }
@@ -195,15 +167,17 @@ if {~ $CLICOLOR ()} {
 
 # Useful utils
 fn lc {
-  fn searchcommandhistory {
-    grep -av '^lc ' ~/.es_history | grep -a $1
-  }
-
-  if {~ $#* 1 || ~ $#* 0} {
-    searchcommandhistory $1 | nl | tail -20
-  } {
-    eval `{searchcommandhistory $1 | sed -n $2^p}
-  }
+    local (
+        fn searchcommandhistory {
+            grep -av '^lc ' ~/.es_history | grep -a $1
+          }
+    ) {
+          if {~ $#* 1 || ~ $#* 0} {
+            searchcommandhistory $1 | nl | tail -20
+          } {
+            eval `{searchcommandhistory $1 | sed -n $2^p}
+          }
+    }
 }
 
 fn fv {
@@ -231,31 +205,80 @@ fn xh {
 }
 
 # what to do for an interactive session
+# At the end of this prompt function, it replaces itself with one that just adjusts the prompt.
 fn %prompt {
     stty -ixon # disable XOFF/XON (stop stupid C-s, esp. since readline uses it)
     history = $home/.es_history
     # eval `{gnome-keyring-daemon --start}
-    cd .
 
-    fn %prompt {
-        if {~ $TERM xterm* rxvt*} {
-            echo -n \033]0\;$promptwd\007
+    let (
+        promptwd = ()
+        branch = ()
+        host = `hostname
+        fn cutdir dir {
+            let (
+                discard = ()
+                small_dir = <={~~ $dir /*}
+                # Frustratingly, BSD test doesn't support -l
+                fn strlen {
+                    if {~ $1 ()} {
+                        return 0
+                    } {
+                        return `{awk 'BEGIN { print length("'^$1^'") }'}
+                    }
+                }
+            ) {
+                while {test 50 -lt <={strlen $small_dir}} {
+                    (discard small_dir) = <={~~ $small_dir */*}
+                }
+
+                if {~ $discard ()} {
+                    return $dir
+                } {
+                    return .../$small_dir
+                }
+            }
+        }
+    ) {
+        fn cd-change dir {
+            promptwd = $dir
+            if {~ $promptwd $home^*} {
+                promptwd = '/~'^<={~~ $promptwd $home^*}
+            }
+
+            promptwd = <={cutdir $promptwd}
+
+            if {~ $promptwd '/~'*} {
+                promptwd = <={~~ $promptwd /*}
+            }
         }
 
-        # TODO God this is ugly. Separate prompt calculation...
-        let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME; venv=$VIRTUAL_ENV) {
-            if {!~ $branch ()} {
-                branch = ' ['^$branch^']'
+        fn %prompt parse_elapsed status {
+            if {~ $TERM xterm* rxvt*} {
+                echo -n \033]0\;$promptwd\007
             }
-            if {!~ $aws-role ()} {
-                aws-role = ' | '^$aws-role' ('`{expr '(' `{date +%s} - $AWS_SAML_TIME ')' / 60}'mins)'
+
+            # TODO God this is ugly. Separate prompt calculation...
+            let (e = \033; a=\1; z=\2; branch=`{git rev-parse --abbrev-ref HEAD >[2] /dev/null}; aws-role=$AWS_ROLE_NAME; venv=$VIRTUAL_ENV) {
+                if {!~ $branch ()} {
+                    branch = ' ['^$branch^']'
+                }
+                if {!~ $aws-role ()} {
+                    aws-role = ' | '^$aws-role' ('`{expr '(' `{date +%s} - $AWS_SAML_TIME ')' / 60}'mins)'
+                }
+                if {!~ $venv ()} {
+                    venv = ' | '^`{basename $venv}
+                }
+                prompt = $a'^='$status' ('$parse_elapsed') '$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
             }
-            if {!~ $VIRTUAL_ENV ()} {
-                venv = ' | '^`{basename $venv}
-            }
-            prompt = $a'^='$_result' ('$_parse_elapsed') '$e[4\;35m$host$e^'[0m:'^$e^'[1;34m'^$promptwd$e^'[0m'^$^branch$^aws-role$^venv$z^\n^'; '
         }
     }
 
-    %prompt
+    cd .  # force branch/promptwd to be set
+    %prompt $*  # run our new %prompt function
+}
+
+# So we don't check custom environment into git...
+if {test -e ~/.esrc_local} {
+  . ~/.esrc_local
 }

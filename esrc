@@ -212,7 +212,6 @@ fn %prompt {
     # eval `{gnome-keyring-daemon --start}
 
     let (
-        promptwd = ()
         branch = ()
         host = `hostname
         fn cutdir dir {
@@ -274,7 +273,7 @@ fn %prompt {
         }
     }
 
-    cd .  # force branch/promptwd to be set
+    cd .  # force promptwd to be set on initial login
     %prompt $*  # run our new %prompt function
 }
 
